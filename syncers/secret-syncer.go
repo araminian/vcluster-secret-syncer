@@ -45,7 +45,7 @@ var _ syncer.Starter = &secretSyncer{}
 
 // reconcile start
 func (s *secretSyncer) ReconcileStart(ctx *synccontext.SyncContext, req ctrl.Request) (bool, error) {
-	return true, nil
+	return false, nil
 }
 
 func (s *secretSyncer) ReconcileEnd() {
@@ -59,6 +59,7 @@ func (s *secretSyncer) SyncUp(ctx *synccontext.SyncContext, pObj client.Object) 
 
 	pSecret := pObj.(*corev1.Secret)
 
+	ctx.Log.Infof("syncing up secret %s/%s", pSecret.GetNamespace(), pSecret.GetName())
 	// ignore secrets that are sync from vcluster to host
 	if pSecret.GetLabels()[translate.MarkerLabel] != "" {
 		return ctrl.Result{}, nil
